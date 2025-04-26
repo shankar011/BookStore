@@ -292,7 +292,13 @@
                 margin-top: 20px;
             }
 
-           
+            .about-section {
+                flex-direction: column;
+            }
+
+
+
+
         }
 
 
@@ -366,23 +372,19 @@
         }
 
 
-        @media screen and (max-width: 768px) {
-            .about-section {
-                flex-direction: column;
-            }
-
-            .about-content {
-                margin-top: 20px;
-            }
+        @media screen and (max-width: 768px) {}
 
 
-        }
+
+
+
+        
     </style>
 </head>
 
 <body>
 
-    <!-- Header -->
+   
     <header>
         <div class="nav">
             <h1>BookStore</h1>
@@ -419,7 +421,7 @@
             <div class="product-info">
                 <p>Name: Atomic Habit</p>
                 <p>Price: Rs. 219</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart('Atomic Habit', 219)">Add to cart</button>
             </div>
         </div>
 
@@ -432,7 +434,7 @@
             <div class="product-info">
                 <p>Name: The Mountain Is You</p>
                 <p>Price: Rs. 247</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart('The Mountain Is You', 247)">Add to cart</button>
             </div>
         </div>
 
@@ -442,7 +444,7 @@
             <div class="product-info">
                 <p>Name: Do Epic shit</p>
                 <p>Price: Rs. 292</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart('Do Epic shit', 292)">Add to cart</button>
             </div>
         </div>
 
@@ -452,7 +454,7 @@
             <div class="product-info">
                 <p>Name: Ikigai</p>
                 <p>Price: Rs. 345</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart('Ikigai', 345)">Add to cart</button>
             </div>
         </div>
 
@@ -462,7 +464,7 @@
             <div class="product-info">
                 <p>Name: Rework</p>
                 <p>Price: Rs. 479</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart('Rework', 479)">Add to cart</button>
             </div>
         </div>
 
@@ -470,9 +472,10 @@
         <div class="product-card">
             <img src="./images/essays.jpg" alt="White Sports Shoes">
             <div class="product-info">
-                <p>Name: 101 Essays That Will Change The Way You Think</p>
+                <p>Name: Essays That Will Change The Way You Think101</p>
                 <p>Price: Rs. 356</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart(' Essays That Will Change The Way You Think', 356)">Add
+                    to cart</button>
             </div>
         </div>
 
@@ -484,7 +487,8 @@
             <div class="product-info">
                 <p>Name: The Subtle Art of Not Giving a F*Ck</p>
                 <p>Price: Rs. 174</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart('The Subtle Art of Not Giving a F*Ck', 174)">Add to
+                    cart</button>
             </div>
         </div>
 
@@ -494,9 +498,26 @@
             <div class="product-info">
                 <p>Name:How To Win Friends And Influence People</p>
                 <p>Price: Rs. 179</p>
-                <button class="add-cart-btn">Add to cart</button>
+                <button class="add-cart-btn" onclick="addToCart('How To Win Friends And Influence People', 179)">Add to
+                    cart</button>
             </div>
         </div>
+
+
+        <div id="cart-section" style="padding: 20px; background-color: #fff;">
+            <h2 style="text-align: center; color: #4b2e1f;">🛒 Your Cart</h2>
+            <div id="cart-items" style="text-align: center;"></div>
+        </div>
+
+        <!-- Cart Section -->
+        <div class="cart-section" style="padding: 20px; background-color: #fff;">
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <h3 id="total-price">Total: Rs. 0</h3>
+        </div>
+
+
+
     </div>
 
     <!-- About Section -->
@@ -559,6 +580,96 @@
             dots[index].classList.add("active");
             currentSlide = index;
         }
+
+
+        const cartItems = [];
+        let total = 0;
+
+        function addToCart(name, price) {
+            cartItems.push({ name, price });
+            total += price;
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartList = document.getElementById("cart-items");
+            const totalDisplay = document.getElementById("cart-total");
+
+            // Clear existing items
+            cartList.innerHTML = "";
+
+            // Display each item
+            cartItems.forEach((item, index) => {
+                const li = document.createElement("li");
+                li.textContent = `${item.name} - Rs. ${item.price}`;
+                cartList.appendChild(li);
+            });
+
+            totalDisplay.innerHTML = `<strong>Total:</strong> Rs. ${total}`;
+        }
+
+
+
+
+
+
+        // Cart object to store items
+        let cart = {};
+
+        // Function to add to cart
+        function addToCart(productName, price) {
+            if (cart[productName]) {
+                cart[productName].quantity += 1;
+            } else {
+                cart[productName] = { price: price, quantity: 1 };
+            }
+            updateCart();
+        }
+
+        // Function to increase quantity
+        function increaseQuantity(productName) {
+            cart[productName].quantity += 1;
+            updateCart();
+        }
+
+        // Function to decrease quantity
+        function decreaseQuantity(productName) {
+            if (cart[productName].quantity > 1) {
+                cart[productName].quantity -= 1;
+            } else {
+                delete cart[productName]; // Remove item if quantity is 0
+            }
+            updateCart();
+        }
+
+        // Function to update cart display
+        function updateCart() {
+            const cartContainer = document.getElementById('cart-items');
+            const totalPriceElement = document.getElementById('total-price');
+            cartContainer.innerHTML = ''; // Clear previous cart display
+
+            let total = 0;
+
+            for (const product in cart) {
+                const item = cart[product];
+                total += item.price * item.quantity;
+
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+            <span>${product} - Rs. ${item.price} × ${item.quantity}</span>
+            <button onclick="increaseQuantity('${product}')">+</button>
+            <button onclick="decreaseQuantity('${product}')">-</button>
+        `;
+                cartContainer.appendChild(cartItem);
+            }
+
+            totalPriceElement.textContent = `Total: Rs. ${total}`;
+        }
+
+
+
+
 
         // Optional: Auto-play feature
         setInterval(() => {
